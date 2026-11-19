@@ -1,3 +1,9 @@
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+
 # Read command-line arguments
 args <- commandArgs(trailingOnly = TRUE)
 species_a <- args[1] # The first argument is the name of the first species
@@ -17,13 +23,14 @@ selected_species <- c(species_a, species_b)
 iris_data <- datasets::iris
 
 species_colours <- c(
-  setosa = "tomato",
-  versicolor = "steelblue",
+  setosa = "pink",
+  versicolor = "royalblue",
   virginica = "gold"
 )
 
 # Keep only data from the selected species
-iris_subset <- iris_data[iris_data$Species %in% selected_species, ]
+#iris_subset <- iris_data[iris_data$Species %in% selected_species, ]
+iris_subset <- filter(iris_data, Species %in% selected_species)
 
 # EXERCISE: Create an output filename using species_a and species_b.
 #
@@ -37,29 +44,18 @@ output_filename <- paste0(
    ".png"
  )
 
-# Open plot
-png(
+
+species_plot <- ggplot(iris_subset, aes(x=Petal.Width, y=Petal.Length, colour=Species)) +
+  geom_point() + 
+  scale_colour_manual(values = species_colours) +
+  labs(x= "Petal width", y= "Petal length")
+
+ggsave(
   filename = output_filename,
+  plot = species_plot,
   width = image_size,
-  height = image_size
-)
+  height = image_size,
+  units = "px",
+  dpi = 150  
+  )
 
-plot(
-  Petal.Length ~ Petal.Width,
-  data = iris_subset,
-  col = species_colours[as.character(iris_subset$Species)],
-  pch = 19,
-  xlab = "Petal width",
-  ylab = "Petal length",
-  main = paste(species_a, "and", species_b)
-)
-
-legend(
-  "topleft",
-  legend = selected_species,
-  col = species_colours[selected_species],
-  pch = 19,
-  bty = "n"
-)
-
-dev.off() # Close plot
