@@ -29,7 +29,7 @@ species_colours <- c(
 )
 
 # Keep only data from the selected species
-#iris_subset <- iris_data[iris_data$Species %in% selected_species, ]
+
 iris_subset <- filter(iris_data, Species %in% selected_species)
 
 # EXERCISE: Create an output filename using species_a and species_b.
